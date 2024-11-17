@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Home.css';
 import Sign_up_in from '../components/Sign_up_in';
 import Navbar from '../components/Navbar';
@@ -6,6 +6,14 @@ import Navbar from '../components/Navbar';
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if user is logged in on component mount
+    const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -15,12 +23,26 @@ const Home = () => {
     setIsModalOpen(false);
   };
 
+  const handleLogout = () => {
+    // Make a logout request to the backend
+    fetch('http://localhost:5000/logout', {
+      method: 'POST',
+      credentials: 'include',
+    })
+      .then(() => {
+        setIsLoggedIn(false);
+        document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+      })
+      .catch(err => console.log('Logout failed', err));
+  };
+
   return (
     <div>
       <Navbar 
         setIsModalOpen={setIsModalOpen} 
         isLoggedIn={isLoggedIn} 
         setIsLoggedIn={setIsLoggedIn} 
+        handleLogout={handleLogout} 
       />
       {isModalOpen && <Sign_up_in onClose={closeModal} setIsLoggedIn={setIsLoggedIn} />}
       
