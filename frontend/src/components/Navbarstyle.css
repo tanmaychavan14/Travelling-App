@@ -2,31 +2,37 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 1rem;
-    background-color: #000;
-    color: #fff;
+    padding: 0;
+    background-color: rgba(241, 236, 236, 0.8);
+    color:black;
+    border-radius: 8px; 
+    margin : 0;
   }
   
   .trip-logo {
-    font-size:xx-large;
+    padding: 0;
+    margin: 0;
+    font-size: 2.5rem; /* Adjust size as needed */
     font-weight: bold;
-    color: #fff;
-    cursor: pointer;
+    color: black;
+    margin-left: 50px;
   }
   
   .Nav-Menu {
+    font-size: larger;
+    font-weight: bold;
     display: flex;
     list-style: none;
     gap: 1.5rem;
   }
   
   .Nav-Menu li {
-    color: #fff;
+    color: black;
     cursor: pointer;
   }
   
   .Nav-Menu li:hover {
-    color: #ddd;
+    color:black;
   }
 
   .Nav-Bar .Nav-Menu .Log-in{
@@ -34,6 +40,7 @@
     color : blue;
     font-style:bold;
     font-weight:bold;
+    margin-right: 10px;
   }
   .Nav-Bar .Nav-Menu .Log-in.logout {
     color: red;  /* Apply red color when logged out */
