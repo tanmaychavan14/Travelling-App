@@ -99,7 +99,7 @@ async function geocode(address) {
 // Endpoint to handle search suggestions based on query
 app.get('/search-suggestions',async (req, res) => {
     const query = req.query.query ? req.query.query.toLowerCase() : '';
-    console.log(query)
+    
     try {
     
         // Geocoding the query using Nominatim API
@@ -134,12 +134,7 @@ async function geocode(address) {
 // Hotels fetching endpoint
 app.get("/fetch-hotels",isLoggedIn, async (req, res) => {
     try {
-        const query = req.query.query || '';  // Get the query parameter from the URL
-        
-
-        console.log('Search query:', query);
-
-        // Geocode the query (address)
+        const query = req.query.query || '';  
         const locationData = await geocode(query);  // Get geocode data based on the query
         if (locationData.length === 0) {
             return res.status(400).json({ message: "No location found" });
@@ -152,8 +147,9 @@ console.log(latitude)
         // Use the latitude and longitude for the API request
         const url = 'https://travel-advisor.p.rapidapi.com/hotels/list-by-latlng';
         const params = {
-            longitude: longitude,
+          
             latitude: latitude,
+            longitude: longitude,
             lunit: 'km',
             currency: 'USD',
             lang: 'en_US',
@@ -166,7 +162,7 @@ console.log(latitude)
         };
 
         const response = await axios.get(url, { params, headers });
-        console.log(response.data)
+        // console.log(response.data)
         res.status(200).json(response.data);  // Send the correct data to the frontend
     } catch (err) {
         console.error("Error fetching hotels:", err);
@@ -177,11 +173,22 @@ console.log(latitude)
 
 app.get("/fetch-restaurants", isLoggedIn,async (req, res) => {
     try {
+        const query = req.query.query || '';  
+        const locationData = await geocode(query);  // Get geocode data based on the query
+        if (locationData.length === 0) {
+            return res.status(400).json({ message: "No location found" });
+        }
+
+        // Get latitude and longitude from geocode data
+        const latitude = locationData[0].lat;
+        const longitude = locationData[0].lon;
+console.log(latitude)
+console.log(longitude)
         // Define the API URL and parameters
         const url = 'https://travel-advisor.p.rapidapi.com/restaurants/list-by-latlng';
         const params = {
-            latitude: '12.91285',
-            longitude: '100.87808',
+            latitude: latitude,
+            longitude: longitude,
             limit: 30,
             currency: 'USD',
             distance: 2,
@@ -208,11 +215,22 @@ app.get("/fetch-restaurants", isLoggedIn,async (req, res) => {
 
 app.get("/fetch-attractions",isLoggedIn, async (req, res) => {
     try {
+        const query = req.query.query || '';  
+        const locationData = await geocode(query);  // Get geocode data based on the query
+        if (locationData.length === 0) {
+            return res.status(400).json({ message: "No location found" });
+        }
+console.log("attraction " + query);
+
+        // Get latitude and longitude from geocode data
+        const latitude = locationData[0].lat;
+        const longitude = locationData[0].lon;
+
         // Define the API URL and parameters
         const url = 'https://travel-advisor.p.rapidapi.com/attractions/list-by-latlng';
         const params = {
-            longitude: '109.19553',
-            latitude: '12.235588',
+            latitude: latitude,
+            longitude: longitude,
             lunit: 'km',
             currency: 'USD',
             lang: 'en_US'
@@ -226,7 +244,7 @@ app.get("/fetch-attractions",isLoggedIn, async (req, res) => {
 
         // Make the API request using Axios
         const response = await axios.get(url, { params, headers });
-
+          console.log(response.data)
         // Return the data received from the API to the client
         res.status(200).json(response.data);
     } catch (err) {
