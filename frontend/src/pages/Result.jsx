@@ -23,9 +23,11 @@ export default function Result() {
     <div>
       <h1>Results for: {query}</h1>
       <div>
+        <h3>hotels</h3>
         <Hotels query={query} />
-      
+      <h3>restaurants</h3>
         <Restaurants query={query}/>
+        <h3>attractions</h3>
         <Attractions query={query} />
       </div>
     </div>

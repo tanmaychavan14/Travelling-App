@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { openDB } from 'idb';
 
 const Attractions = ({ query }) => {
   const [locations, setLocations] = useState([]);
@@ -6,10 +7,32 @@ const Attractions = ({ query }) => {
 
   useEffect(() => {
     const fetchAttractions = async () => {
+      setLoading(true);
+      
       try {
+        // Open IndexedDB
+        const db = await openDB('AttractionsDB', 1, {
+          upgrade(db) {
+            if (!db.objectStoreNames.contains('attractions')) {
+              db.createObjectStore('attractions', { keyPath: 'query' });
+            }
+          },
+        });
+
+        // Check if data exists in IndexedDB
+        const cachedData = await db.get('attractions', query);
+
+        if (cachedData) {
+          console.log('Data loaded from IndexedDB');
+          setLocations(cachedData.locations);
+          setLoading(false);
+          return;
+        }
+
+        // Fetch data from API
         const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
         if (!token) {
-          console.error('Token not found A');
+          console.error('Token not found');
           setLoading(false);
           return;
         }
@@ -36,12 +59,15 @@ const Attractions = ({ query }) => {
 
         if (data && Array.isArray(data.data) && data.data.length > 0) {
           setLocations(data.data);
+
+          // Store data in IndexedDB
+          await db.put('attractions', { query, locations: data.data });
+          console.log('Data saved to IndexedDB');
         } else {
           setLocations([]);
         }
       } catch (error) {
         console.error('Error fetching locations:', error);
-        console.log("hellow"+error)
         setLocations([]);
       } finally {
         setLoading(false);
