@@ -13,7 +13,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
     origin: 'http://localhost:3000',  // Allow only your frontend to access
-    credentials: true,  // Allow cookies to be sent
+    credentials: true, 
+
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allow cookies to be sent
 }));
 
 
@@ -31,7 +33,7 @@ app.get("/", (req, res) => {
 app.post('/registration', async (req, res) => {
     try {
         const { name, email, password } = req.body;
-        console.log("Request Body:", req.body);
+        
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ error: "Email already exists!" });
@@ -133,6 +135,7 @@ async function geocode(address) {
 
 // Hotels fetching endpoint
 app.get("/fetch-hotels",isLoggedIn, async (req, res) => {
+    
     try {
         const query = req.query.query || '';  
         const locationData = await geocode(query);  // Get geocode data based on the query
@@ -143,7 +146,7 @@ app.get("/fetch-hotels",isLoggedIn, async (req, res) => {
         // Get latitude and longitude from geocode data
         const latitude = locationData[0].lat;
         const longitude = locationData[0].lon;
-console.log(latitude)
+
         // Use the latitude and longitude for the API request
         const url = 'https://travel-advisor.p.rapidapi.com/hotels/list-by-latlng';
         const params = {
@@ -157,12 +160,12 @@ console.log(latitude)
         };
 
         const headers = {
-            'x-rapidapi-key': 'efba8458a6msh223cfc2926af23ap1aba4fjsn8e67c2cd8cf3', // Replace with your actual API key
+            'x-rapidapi-key': '4a328da117msh9fe160bd992ca60p1519b9jsnc19f1b5621cf', // Replace with your actual API key
             'x-rapidapi-host': 'travel-advisor.p.rapidapi.com'
         };
-
+        
         const response = await axios.get(url, { params, headers });
-        // console.log(response.data)
+        // console.log("Hotel API Response:", response.data); 
         res.status(200).json(response.data);  // Send the correct data to the frontend
     } catch (err) {
         console.error("Error fetching hotels:", err);
@@ -182,8 +185,7 @@ app.get("/fetch-restaurants", isLoggedIn,async (req, res) => {
         // Get latitude and longitude from geocode data
         const latitude = locationData[0].lat;
         const longitude = locationData[0].lon;
-console.log(latitude)
-console.log(longitude)
+
         // Define the API URL and parameters
         const url = 'https://travel-advisor.p.rapidapi.com/restaurants/list-by-latlng';
         const params = {
@@ -198,7 +200,7 @@ console.log(longitude)
         };
 
         const headers = {
-            'x-rapidapi-key': 'efba8458a6msh223cfc2926af23ap1aba4fjsn8e67c2cd8cf3',
+            'x-rapidapi-key': '4a328da117msh9fe160bd992ca60p1519b9jsnc19f1b5621cf',
             'x-rapidapi-host': 'travel-advisor.p.rapidapi.com'
         };
 
@@ -220,7 +222,7 @@ app.get("/fetch-attractions",isLoggedIn, async (req, res) => {
         if (locationData.length === 0) {
             return res.status(400).json({ message: "No location found" });
         }
-console.log("attraction " + query);
+
 
         // Get latitude and longitude from geocode data
         const latitude = locationData[0].lat;
@@ -238,13 +240,13 @@ console.log("attraction " + query);
 
         // Define the headers
         const headers = {
-            'x-rapidapi-key': 'efba8458a6msh223cfc2926af23ap1aba4fjsn8e67c2cd8cf3',
+            'x-rapidapi-key': '4a328da117msh9fe160bd992ca60p1519b9jsnc19f1b5621cf',
             'x-rapidapi-host': 'travel-advisor.p.rapidapi.com'
         };
 
         // Make the API request using Axios
         const response = await axios.get(url, { params, headers });
-          console.log(response.data)
+          
         // Return the data received from the API to the client
         res.status(200).json(response.data);
     } catch (err) {
@@ -264,7 +266,10 @@ app.post("/logout", (req, res) => {
 
 // Middleware to check if the user is logged in
 function isLoggedIn(req, res, next) {
-    const token = req.headers.authorization && req.headers.authorization.split(' ')[1]; // Get token from 'Bearer <token>'
+   
+    const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+   
+    // Get token from 'Bearer <token>'
     if (!token) {
         return res.status(401).json({ message: "Unauthorized" });
     }
@@ -272,6 +277,7 @@ function isLoggedIn(req, res, next) {
         const data = jwt.verify(token, "encryption");
         req.user = data;
         next();
+        
     } catch (err) {
         return res.status(401).json({ message: "Invalid token" });
     }

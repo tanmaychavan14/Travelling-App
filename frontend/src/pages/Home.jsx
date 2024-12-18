@@ -71,7 +71,7 @@ const Home = () => {
     }
     console.log(query)
     const token = document.cookie.split('; ').find(row => row.startsWith('token='));
-    console.log(token)
+    // console.log(token)
     try {
       const response = await fetch(`http://localhost:5000/search-suggestions?query=${query}`);
 

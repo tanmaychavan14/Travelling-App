@@ -9,12 +9,13 @@ const Attractions = ({ query }) => {
       try {
         const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
         if (!token) {
-          console.error('Token not found');
+          console.error('Token not found A');
           setLoading(false);
           return;
         }
 
         const response = await fetch(`http://localhost:5000/fetch-attractions?query=${query}`, {
+          method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
           },

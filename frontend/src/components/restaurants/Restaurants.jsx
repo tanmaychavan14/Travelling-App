@@ -16,6 +16,7 @@ const Restaurants = ({query}) => {
                 }
 
                 const response = await fetch(`http://localhost:5000/fetch-restaurants?query=${query}`,{
+                  method: 'GET',
                   headers : {
                     Authorization : `Bearer ${token}`,
                   },
