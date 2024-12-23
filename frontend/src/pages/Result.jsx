@@ -3,14 +3,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Hotels from '../components/hotels/Hotels';
 import Attractions from '../components/attractions/Attractions';
 import Restaurants from '../components/restaurants/Restaurants';
+import './Result.css'; // Import the CSS file for custom styles
 
 export default function Result() {
   const location = useLocation();
-  const navigate = useNavigate(); // Hook to navigate programmatically
+  const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const query = queryParams.get('query');
 
-  // State to manage which tab/content is selected
   const [activeTab, setActiveTab] = useState('hotels');
 
   if (!query) {
@@ -23,30 +23,35 @@ export default function Result() {
   }
 
   const goback = () => {
-    navigate('/'); // Navigate to home page
+    navigate('/');
   };
 
   return (
-    <div>
-      <button onClick={goback}>Go Back</button>
-      <h1>Results for: {query}</h1>
+    <div className="result-container">
+      <header className="header">
+        <h1 className="website-name">Travelify</h1>
+      </header>
+      <button className="go-back-btn" onClick={goback}>
+        <span className="go-back-symbol">&#8592;</span> Go Back
+      </button>
+      <h2 className="query-heading"> {query}</h2>
 
       {/* Buttons to switch between tabs */}
-      <div className="flex justify-center space-x-4 mb-6">
+      <div className="tab-buttons">
         <button 
-          className={`px-4 py-2 ${activeTab === 'hotels' ? 'bg-orange-600 text-white' : 'bg-gray-200'}`}
+          className={`tab-btn ${activeTab === 'hotels' ? 'active' : ''}`}
           onClick={() => setActiveTab('hotels')}
         >
           Hotels
         </button>
         <button 
-          className={`px-4 py-2 ${activeTab === 'restaurants' ? 'bg-orange-600 text-white' : 'bg-gray-200'}`}
+          className={`tab-btn ${activeTab === 'restaurants' ? 'active' : ''}`}
           onClick={() => setActiveTab('restaurants')}
         >
           Restaurants
         </button>
         <button 
-          className={`px-4 py-2 ${activeTab === 'attractions' ? 'bg-orange-600 text-white' : 'bg-gray-200'}`}
+          className={`tab-btn ${activeTab === 'attractions' ? 'active' : ''}`}
           onClick={() => setActiveTab('attractions')}
         >
           Attractions
@@ -55,26 +60,9 @@ export default function Result() {
 
       {/* Content displayed based on the active tab */}
       <div>
-        {activeTab === 'hotels' && (
-          <div>
-            <h3>Hotels</h3>
-            <Hotels query={query} />
-          </div>
-        )}
-
-        {activeTab === 'restaurants' && (
-          <div>
-            <h3>Restaurants</h3>
-            <Restaurants query={query} />
-          </div>
-        )}
-
-        {activeTab === 'attractions' && (
-          <div>
-            <h3>Attractions</h3>
-            <Attractions query={query} />
-          </div>
-        )}
+        {activeTab === 'hotels' && <Hotels query={query} />}
+        {activeTab === 'restaurants' && <Restaurants query={query} />}
+        {activeTab === 'attractions' && <Attractions query={query} />}
       </div>
     </div>
   );

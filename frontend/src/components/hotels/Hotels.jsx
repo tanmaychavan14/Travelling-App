@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { openDB } from "idb";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { Icon } from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import '../hotels/hotel.css';
 
 export default function Hotels({ query }) {
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [minRating, setMinRating] = useState(0);
+  const [selectedLocation, setSelectedLocation] = useState(null); // Track selected location for map centering
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+  const [zoomedImage, setZoomedImage] = useState(null); // Image for zooming
+   const [imageLoading, setImageLoading] = useState(false);
   const initDB = async () => {
     return await openDB("TravelData", 1, {
       upgrade(db) {
@@ -100,26 +107,99 @@ export default function Hotels({ query }) {
     return stars;
   };
 
+  // Function to handle rating filter change from slider
+  const handleRatingChange = (event) => {
+    setMinRating(Number(event.target.value));
+  };
+
+  // Filter the hotels based on the selected minimum rating
+  const filteredLocations = locations.filter((location) => location.rating >= minRating);
+
+  // Function to handle marker click, update selected location and map center
+  const handleMarkerClick = (location) => {
+    setSelectedLocation(location); // Set the selected location
+  };
+
+  // Custom icon for the markers
+  const hotelIcon = new Icon({
+    iconUrl: '/images/download1.png',
+    iconSize: [30, 30],
+  });
+
+  // MapUpdater component to shift map center dynamically
+  function MapUpdater() {
+    const map = useMap();
+
+    useEffect(() => {
+      if (selectedLocation) {
+        const { latitude, longitude } = selectedLocation;
+        if (latitude && longitude) {
+          map.setView([parseFloat(latitude), parseFloat(longitude)], 13);
+        }
+      }
+    }, [selectedLocation, map]);
+
+    return null;
+  }
+
+  // Open the modal and set the image for zooming
+  const handleImageClick = (imageUrl) => {
+    setZoomedImage(imageUrl);
+    setIsModalOpen(true);
+  };
+
+  // Close the modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setZoomedImage(null);
+  };
+  const handleImageLoad = () => {
+    setImageLoading(false); // Image loaded, stop showing loading indicator
+  };
+  const handleImageError = (e) => {
+     // Fallback image on error
+    setImageLoading(false); // Image error, stop loading indicator
+  };
+
   return (
     <div>
+      <div className="rating-filter">
+        <label htmlFor="rating">Minimum Rating: </label>
+        <input 
+          type="range" 
+          id="rating" 
+          min="1" 
+          max="5" 
+          value={minRating} 
+          onChange={handleRatingChange}
+          step="0.1"
+        />
+        <span>{minRating} Stars</span>
+      </div>
+
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
         <p>{error}</p>
-      ) : locations.length > 0 ? (
+      ) : filteredLocations.length > 0 ? (
         <div className="hotel-grid">
-          {locations.map((location, index) => (
+          {filteredLocations.map((location, index) => (
             <div key={index} className="hotel-card">
-              <img src={location.photo?.images?.large?.url} alt={location.name} className="hotel-image" />
+                 <img 
+                src={location.photo?.images?.large?.url ||"/images/restaurant.png"} 
+                alt={location.name || 'Restaurant image'} 
+                className="restaurant-image" 
+                onClick={() => handleImageClick(location.photo?.images?.original?.url)} 
+                onLoad={handleImageLoad} // When the image loads
+                onError={handleImageError} // When the image fails to load
+              />
               <div className="hotel-info">
                 <h3>{location.name}</h3>
                 <p>{location.location_string}</p>
                 <div className="rating">{renderStars(location.rating)}</div>
                 <p><strong>Rating: </strong>{location.rating} ({location.num_reviews} reviews)</p>
                 <p className="price"><strong>Price: </strong>{location.price_level} {location.price}</p>
-                {/* <p><strong>Distance: </strong>{location.distance ? `${location.distance.toFixed(2)} km` : 'N/A'}</p> */}
                 {location.ranking && <p className="hotel-ranking"><strong>Ranking: </strong>{location.ranking}</p>}
-                {location.special_offers && <p className="special-offers">Special Offers Available</p>}
                 <a href={`https://www.tripadvisor.com/Hotel_Review-${location.location_id}`} target="_blank" rel="noopener noreferrer">
                   View Details & Book
                 </a>
@@ -129,6 +209,45 @@ export default function Hotels({ query }) {
         </div>
       ) : (
         <p>No results found</p>
+      )}
+
+      <div style={{ height: "400px", marginTop: "20px" }}>
+        <MapContainer center={[12.921432, 100.85973]} zoom={13} style={{ height: "100%", width: "100%" }}>
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          {filteredLocations.map((location, index) => (
+            <Marker
+              key={index}
+              position={[parseFloat(location.latitude), parseFloat(location.longitude)]}
+              icon={hotelIcon}
+              eventHandlers={{
+                click: () => handleMarkerClick(location), // Update selected location on click
+              }}
+            >
+              <Popup>
+                <strong>{location.name}</strong><br />
+                {location.location_string}<br />
+                Rating: {location.rating} stars
+              </Popup>
+            </Marker>
+          ))}
+          <MapUpdater /> {/* Add this component to handle map updates */}
+        </MapContainer>
+      </div>
+
+      {/* Modal for zooming image */}
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <img
+              src={zoomedImage}
+              alt="Zoomed"
+              className="zoomed-image"
+              onClick={handleCloseModal} // Close modal on image click
+            />
+          </div>
+        </div>
       )}
     </div>
   );
