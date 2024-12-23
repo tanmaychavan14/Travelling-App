@@ -1,0 +1,64 @@
+/* Styling for the hotel grid */
+.hotel-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    gap: 20px; /* Space between cards */
+    margin-top: 20px;
+  }
+  
+  /* Styling for each hotel card */
+  .hotel-card {
+    border: 1px solid #ddd;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .hotel-card:hover {
+    transform: scale(1.05); /* Slightly enlarge card on hover */
+  }
+  
+  .hotel-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  
+  .hotel-info {
+    margin-top: 10px;
+  }
+  
+  .hotel-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .hotel-card p {
+    font-size: 1rem;
+    color: #555;
+    margin: 5px 0;
+  }
+  
+  .rating {
+    margin-top: 5px;
+  }
+  
+  .star {
+    font-size: 1.2rem;
+    color: #f0b800; /* Gold color for the star */
+  }
+  
+  .star.filled {
+    color: #ffd700; /* Full color for the filled star */
+  }
+  
+  .price {
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  

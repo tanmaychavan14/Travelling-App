@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { openDB } from "idb";
+import '../hotels/hotel.css';
 
 export default function Hotels({ query }) {
   const [locations, setLocations] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
-  const [error, setError] = useState(null); // Add error state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Initialize IndexedDB
   const initDB = async () => {
     return await openDB("TravelData", 1, {
       upgrade(db) {
@@ -17,7 +17,6 @@ export default function Hotels({ query }) {
     });
   };
 
-  // Save data to IndexedDB
   const saveToIndexedDB = async (query, data) => {
     const db = await initDB();
     const tx = db.transaction("hotels", "readwrite");
@@ -25,14 +24,12 @@ export default function Hotels({ query }) {
     await tx.done;
   };
 
-  // Get data from IndexedDB
   const getFromIndexedDB = async (query) => {
     const db = await initDB();
     const tx = db.transaction("hotels", "readonly");
     return await tx.objectStore("hotels").get(query);
   };
 
-  // Fetch hotels when the component mounts
   useEffect(() => {
     const fetchHotels = async () => {
       if (!query) {
@@ -44,7 +41,6 @@ export default function Hotels({ query }) {
       setLoading(true);
 
       try {
-        // Check IndexedDB first
         const cachedData = await getFromIndexedDB(query);
         if (cachedData) {
           console.log("Data loaded from IndexedDB");
@@ -53,7 +49,6 @@ export default function Hotels({ query }) {
           return;
         }
 
-        // If not found in IndexedDB, fetch from the server
         const token = document.cookie.split("; ").find((row) => row.startsWith("token="))?.split("=")[1];
         if (!token) {
           setError("Unauthorized: Token not found");
@@ -79,8 +74,6 @@ export default function Hotels({ query }) {
 
         if (data && Array.isArray(data.data)) {
           setLocations(data.data);
-
-          // Save the data to IndexedDB
           saveToIndexedDB(query, data.data);
         } else {
           setLocations([]);
@@ -96,6 +89,17 @@ export default function Hotels({ query }) {
     fetchHotels();
   }, [query]);
 
+  // Function to render the star rating
+  const renderStars = (rating) => {
+    const stars = [];
+    for (let i = 0; i < 5; i++) {
+      stars.push(
+        <span key={i} className={`star ${i < rating ? "filled" : ""}`}>★</span>
+      );
+    }
+    return stars;
+  };
+
   return (
     <div>
       {loading ? (
@@ -103,11 +107,26 @@ export default function Hotels({ query }) {
       ) : error ? (
         <p>{error}</p>
       ) : locations.length > 0 ? (
-        <ul>
+        <div className="hotel-grid">
           {locations.map((location, index) => (
-            <li key={index}>{location.name}</li>
+            <div key={index} className="hotel-card">
+              <img src={location.photo?.images?.large?.url} alt={location.name} className="hotel-image" />
+              <div className="hotel-info">
+                <h3>{location.name}</h3>
+                <p>{location.location_string}</p>
+                <div className="rating">{renderStars(location.rating)}</div>
+                <p><strong>Rating: </strong>{location.rating} ({location.num_reviews} reviews)</p>
+                <p className="price"><strong>Price: </strong>{location.price_level} {location.price}</p>
+                {/* <p><strong>Distance: </strong>{location.distance ? `${location.distance.toFixed(2)} km` : 'N/A'}</p> */}
+                {location.ranking && <p className="hotel-ranking"><strong>Ranking: </strong>{location.ranking}</p>}
+                {location.special_offers && <p className="special-offers">Special Offers Available</p>}
+                <a href={`https://www.tripadvisor.com/Hotel_Review-${location.location_id}`} target="_blank" rel="noopener noreferrer">
+                  View Details & Book
+                </a>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       ) : (
         <p>No results found</p>
       )}
