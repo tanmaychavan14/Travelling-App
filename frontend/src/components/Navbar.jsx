@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Navbarstyle.css';
-import Sign_up_in from './Sign_up_in';
+// import Sign_up_in from './Sign_up_in';
 
 const Navbar = ({ setIsModalOpen, isLoggedIn, setIsLoggedIn }) => {
   const scrollToContact = () => {
