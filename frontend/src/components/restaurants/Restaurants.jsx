@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { openDB } from 'idb';
 import "../restaurants/restaurant.css";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
@@ -16,7 +16,7 @@ const Restaurants = ({ query }) => {
   const [imageLoading, setImageLoading] = useState(false); // Track loading state of images
 
   // Open the IndexedDB database
-  const openDatabase = async () => {
+  const openDatabase = useCallback(async () => {
     const db = await openDB('restaurantsDB', 1, {
       upgrade(db) {
         if (!db.objectStoreNames.contains('restaurants')) {
@@ -25,23 +25,23 @@ const Restaurants = ({ query }) => {
       },
     });
     return db;
-  };
+  }, []);
 
   // Store data in IndexedDB
-  const storeDataInIDB = async (data) => {
+  const storeDataInIDB = useCallback(async (data) => {
     const db = await openDatabase();
     const store = db.transaction('restaurants', 'readwrite').objectStore('restaurants');
     await store.put(data, query); // Use query as key
     console.log('Data stored in IndexedDB');
-  };
+  }, [openDatabase, query]);
 
   // Retrieve data from IndexedDB
-  const getDataFromIDB = async () => {
+  const getDataFromIDB = useCallback(async () => {
     const db = await openDatabase();
     const store = db.transaction('restaurants', 'readonly').objectStore('restaurants');
     const data = await store.get(query);
     return data;
-  };
+  }, [openDatabase, query]);
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -93,7 +93,7 @@ const Restaurants = ({ query }) => {
     };
 
     fetchRestaurants();
-  }, [query]);
+  }, [query, getDataFromIDB, storeDataInIDB]);
 
   const renderStars = (rating) => {
     const stars = [];
@@ -130,31 +130,29 @@ const Restaurants = ({ query }) => {
   };
 
   const handleImageError = (e) => {
-// Fallback image on error
     setImageLoading(false); // Image error, stop loading indicator
   };
-   const hotelIcon = new Icon({
-      iconUrl: '/images/restaurant.png',
-      iconSize: [30, 30],
-    });
   
-    // MapUpdater component to shift map center dynamically
-    function MapUpdater() {
-      const map = useMap();
+  const hotelIcon = new Icon({
+    iconUrl: '/images/restaurant.png',
+    iconSize: [30, 30],
+  });
   
-      useEffect(() => {
-        if (selectedLocation) {
-          const { latitude, longitude } = selectedLocation;
-          if (latitude && longitude) {
-            map.setView([parseFloat(latitude), parseFloat(longitude)], 13);
-          }
+  // MapUpdater component to shift map center dynamically
+  function MapUpdater() {
+    const map = useMap();
+
+    useEffect(() => {
+      if (selectedLocation) {
+        const { latitude, longitude } = selectedLocation;
+        if (latitude && longitude) {
+          map.setView([parseFloat(latitude), parseFloat(longitude)], 13);
         }
-      }, [selectedLocation, map]);
-  
-      return null;
-    }
-    
-  
+      }
+    }, [map]);
+
+    return null;
+  }
 
   return (
     <div className="restaurant-main">
@@ -206,31 +204,30 @@ const Restaurants = ({ query }) => {
       ) : (
         <p>No results found</p>
       )}
-         <div style={{ height: "400px", marginTop: "20px" }}>
-              <MapContainer center={[12.921432, 100.85973]} zoom={13} style={{ height: "100%", width: "100%" }}>
-                <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                {filteredLocations.map((location, index) => (
-                  <Marker
-                    key={index}
-                    position={[parseFloat(location.latitude), parseFloat(location.longitude)]}
-                    icon={hotelIcon}
-                    eventHandlers={{
-                      click: () => handleMarkerClick(location), // Update selected location on click
-                    }}
-                  >
-                    <Popup>
-                      <strong>{location.name}</strong><br />
-                      {location.location_string}<br />
-                      Rating: {location.rating} stars
-                    </Popup>
-                  </Marker>
-                ))}
-                <MapUpdater /> {/* Add this component to handle map updates */}
-              </MapContainer>
-            </div>
-      
+      <div style={{ height: "400px", marginTop: "20px" }}>
+        <MapContainer center={[12.921432, 100.85973]} zoom={13} style={{ height: "100%", width: "100%" }}>
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          {filteredLocations.map((location, index) => (
+            <Marker
+              key={index}
+              position={[parseFloat(location.latitude), parseFloat(location.longitude)]}
+              icon={hotelIcon}
+              eventHandlers={{
+                click: () => handleMarkerClick(location), // Update selected location on click
+              }}
+            >
+              <Popup>
+                <strong>{location.name}</strong><br />
+                {location.location_string}<br />
+                Rating: {location.rating} stars
+              </Popup>
+            </Marker>
+          ))}
+          <MapUpdater /> {/* Add this component to handle map updates */}
+        </MapContainer>
+      </div>
 
       {isModalOpen && (
         <div className="modal">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { openDB } from "idb";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon } from 'leaflet';
@@ -13,7 +13,8 @@ export default function Hotels({ query }) {
   const [selectedLocation, setSelectedLocation] = useState(null); // Track selected location for map centering
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
   const [zoomedImage, setZoomedImage] = useState(null); // Image for zooming
-   const [, setImageLoading] = useState(false);
+  const [, setImageLoading] = useState(false);
+
   const initDB = async () => {
     return await openDB("TravelData", 1, {
       upgrade(db) {
@@ -24,18 +25,18 @@ export default function Hotels({ query }) {
     });
   };
 
-  const saveToIndexedDB = async (query, data) => {
+  const saveToIndexedDB = useCallback(async (query, data) => {
     const db = await initDB();
     const tx = db.transaction("hotels", "readwrite");
     tx.objectStore("hotels").put({ query, data });
     await tx.done;
-  };
+  }, []);
 
-  const getFromIndexedDB = async (query) => {
+  const getFromIndexedDB = useCallback(async (query) => {
     const db = await initDB();
     const tx = db.transaction("hotels", "readonly");
     return await tx.objectStore("hotels").get(query);
-  };
+  }, []);
 
   useEffect(() => {
     const fetchHotels = async () => {
@@ -94,7 +95,7 @@ export default function Hotels({ query }) {
     };
 
     fetchHotels();
-  }, [query]);
+  }, [query, saveToIndexedDB, getFromIndexedDB]);
 
   // Function to render the star rating
   const renderStars = (rating) => {
@@ -137,7 +138,7 @@ export default function Hotels({ query }) {
           map.setView([parseFloat(latitude), parseFloat(longitude)], 13);
         }
       }
-    }, [selectedLocation, map]);
+    }, [ map]);
 
     return null;
   }
@@ -153,12 +154,14 @@ export default function Hotels({ query }) {
     setIsModalOpen(false);
     setZoomedImage(null);
   };
+
   const handleImageLoad = () => {
     setImageLoading(false); // Image loaded, stop showing loading indicator
   };
+
   const handleImageError = (e) => {
-     // Fallback image on error
-    setImageLoading(false); // Image error, stop loading indicator
+    e.target.src = "/images/restaurant.png"; // Fallback image on error
+    setImageLoading(false); // Stop loading indicator
   };
 
   return (
@@ -185,13 +188,13 @@ export default function Hotels({ query }) {
         <div className="hotel-grid">
           {filteredLocations.map((location, index) => (
             <div key={index} className="hotel-card">
-                 <img 
-                src={location.photo?.images?.large?.url ||"/images/restaurant.png"} 
+              <img 
+                src={location.photo?.images?.large?.url || "/images/restaurant.png"} 
                 alt={location.name || 'Restaurant image'} 
                 className="restaurant-image" 
                 onClick={() => handleImageClick(location.photo?.images?.original?.url)} 
-                onLoad={handleImageLoad} // When the image loads
-                onError={handleImageError} // When the image fails to load
+                onLoad={handleImageLoad} 
+                onError={handleImageError} 
               />
               <div className="hotel-info">
                 <h3>{location.name}</h3>
@@ -222,7 +225,7 @@ export default function Hotels({ query }) {
               position={[parseFloat(location.latitude), parseFloat(location.longitude)]}
               icon={hotelIcon}
               eventHandlers={{
-                click: () => handleMarkerClick(location), // Update selected location on click
+                click: () => handleMarkerClick(location),
               }}
             >
               <Popup>
@@ -232,11 +235,10 @@ export default function Hotels({ query }) {
               </Popup>
             </Marker>
           ))}
-          <MapUpdater /> {/* Add this component to handle map updates */}
+          <MapUpdater />
         </MapContainer>
       </div>
 
-      {/* Modal for zooming image */}
       {isModalOpen && (
         <div className="modal">
           <div className="modal-content">
@@ -244,7 +246,7 @@ export default function Hotels({ query }) {
               src={zoomedImage}
               alt="Zoomed"
               className="zoomed-image"
-              onClick={handleCloseModal} // Close modal on image click
+              onClick={handleCloseModal}
             />
           </div>
         </div>

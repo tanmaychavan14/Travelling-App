@@ -167,7 +167,7 @@ const Home = () => {
             </div>
             <div className="content-container">
               <h3>Beautiful Beach</h3>
-              <p>A breathtaking beach with crystal clear waters and white sand. Perfect for relaxation and watbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbber sports.<a href="">learn more</a></p>
+              <p>A breathtaking beach with crystal clear waters and white sand. Perfect for relaxation and watbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbber sports.learn more</p>
             </div>
             
             </div>
