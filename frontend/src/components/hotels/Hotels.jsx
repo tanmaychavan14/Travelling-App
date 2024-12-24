@@ -13,7 +13,7 @@ export default function Hotels({ query }) {
   const [selectedLocation, setSelectedLocation] = useState(null); // Track selected location for map centering
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
   const [zoomedImage, setZoomedImage] = useState(null); // Image for zooming
-   const [imageLoading, setImageLoading] = useState(false);
+   const [, setImageLoading] = useState(false);
   const initDB = async () => {
     return await openDB("TravelData", 1, {
       upgrade(db) {

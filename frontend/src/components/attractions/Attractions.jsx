@@ -6,13 +6,13 @@ import { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../hotels/hotel.css';
 const Attractions = ({ query }) => {
-   const [error, setError] = useState(null);
+   const [error] = useState(null);
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(true);
  const [minRating, setMinRating] = useState(0);
   const [selectedLocation, setSelectedLocation] = useState(null); // Track selected location for map centering
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
-  const [imageLoading, setImageLoading] = useState(false);
+  const [, setImageLoading] = useState(false);
   const [zoomedImage, setZoomedImage] = useState(null);
   useEffect(() => {
     const fetchAttractions = async () => {
