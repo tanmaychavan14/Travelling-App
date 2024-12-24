@@ -8,6 +8,7 @@ const User = require("./db/user"); // User model
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 app.use(express.json());
 app.use(cookieParser());
@@ -160,8 +161,8 @@ app.get("/fetch-hotels",isLoggedIn, async (req, res) => {
         };
 
         const headers = {
-            'x-rapidapi-key': '4a328da117msh9fe160bd992ca60p1519b9jsnc19f1b5621cf', // Replace with your actual API key
-            'x-rapidapi-host': 'travel-advisor.p.rapidapi.com'
+            'x-rapidapi-key': process.env.RAPIDAPI_KEY, // Replace with your actual API key
+            'x-rapidapi-host': process.env.RAPIDAPI_HOST
         };
         
         const response = await axios.get(url, { params, headers });
@@ -200,8 +201,8 @@ app.get("/fetch-restaurants", isLoggedIn,async (req, res) => {
         };
 
         const headers = {
-            'x-rapidapi-key': '4a328da117msh9fe160bd992ca60p1519b9jsnc19f1b5621cf',
-            'x-rapidapi-host': 'travel-advisor.p.rapidapi.com'
+            'x-rapidapi-key': process.env.RAPIDAPI_KEY,
+            'x-rapidapi-host': process.env.RAPIDAPI_HOST
         };
 
         // Make the API request using Axios
@@ -240,8 +241,8 @@ app.get("/fetch-attractions",isLoggedIn, async (req, res) => {
 
         // Define the headers
         const headers = {
-            'x-rapidapi-key': '4a328da117msh9fe160bd992ca60p1519b9jsnc19f1b5621cf',
-            'x-rapidapi-host': 'travel-advisor.p.rapidapi.com'
+            'x-rapidapi-key': process.env.RAPIDAPI_KEY,
+            'x-rapidapi-host': process.env.RAPIDAPI_HOST
         };
 
         // Make the API request using Axios
