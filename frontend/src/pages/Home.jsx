@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
-import Sign_up_in from '../components/Sign_up_in';
+import Signupin from '../components/Signupin';
 import Navbar from '../components/Navbar';
 
 const Home = () => {
@@ -70,7 +70,7 @@ const Home = () => {
       return;
     }
     console.log(query)
-    const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+    // const token = document.cookie.split('; ').find(row => row.startsWith('token='));
     // console.log(token)
     try {
       const response = await fetch(`http://localhost:5000/search-suggestions?query=${query}`);
@@ -122,7 +122,7 @@ const Home = () => {
         setIsLoggedIn={setIsLoggedIn}
         handleLogout={handleLogout}
       />
-      {isModalOpen && <Sign_up_in onClose={closeModal} setIsLoggedIn={setIsLoggedIn} />}
+      {isModalOpen && <Signupin onClose={closeModal} setIsLoggedIn={setIsLoggedIn} />}
 
    
       <div id="home" className={`home-container ${isModalOpen ? 'blurred' : ''}`}>
@@ -222,10 +222,10 @@ const Home = () => {
   <h2>Contact Us</h2>
   <div className="contact-info">
     <p>
-      <strong>Email:</strong> <a href="mailto:contact@travelify.com">travel@.com</a>
+      <strong>Email:</strong>travel@.com
     </p>
     <p>
-      <strong>Phone:</strong> <a href="tel:+1234567890">+1-234-567-890</a>
+      <strong>Phone:</strong>+1-234-567-890
     </p>
     <p>
       <strong>Address:</strong> Daurnager ,Uran, Raigad, 400702

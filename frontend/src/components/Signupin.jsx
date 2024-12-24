@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Sign_up_in.css';
 import axios from 'axios';
 
-const Sign_up_in = ({ onClose, setIsLoggedIn }) => {
+const Signupin = ({ onClose, setIsLoggedIn }) => {
   const [isSignUpActive, setSignUpActive] = useState(true);
   const [registrationData, setRegistrationData] = useState({
     name: "",
@@ -161,4 +161,4 @@ const Sign_up_in = ({ onClose, setIsLoggedIn }) => {
   );
 };
 
-export default Sign_up_in;
+export default Signupin;

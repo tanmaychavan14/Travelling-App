@@ -125,7 +125,7 @@ const Attractions = ({ query }) => {
             map.setView([parseFloat(latitude), parseFloat(longitude)], 13);
           }
         }
-      }, [selectedLocation, map]);
+      },);
   
       return null;
     }
