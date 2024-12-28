@@ -30,19 +30,27 @@ const Home = () => {
   };
 
   const handleLogout = () => {
+    console.log('Logout button clicked');
     fetch('http://localhost:5000/logout', {
       method: 'POST',
-      credentials: 'include',
+      credentials: 'include', // Ensure cookies are included in the request
     })
-      .then(() => {
-        setIsLoggedIn(false);
-        
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Logout failed');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);  // This will log the server's response
+        setIsLoggedIn(false);  // Update the login state
       })
       .catch((err) => {
         console.error('Logout failed', err);
         alert('Failed to log out. Please try again.');
       });
   };
+  
   const navigate = useNavigate();
   const handleSearch = () => {
     if (searchQuery.trim() === '' && <p className="error-message">Search term is required!</p>) {

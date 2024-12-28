@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Hotels from '../components/hotels/Hotels';
 import Attractions from '../components/attractions/Attractions';
 import Restaurants from '../components/restaurants/Restaurants';
 import './Result.css'; // Import the CSS file for custom styles
+import Cookies from 'js-cookie'; // Import js-cookie to handle cookies
 
 export default function Result() {
   const location = useLocation();
@@ -12,6 +13,19 @@ export default function Result() {
   const query = queryParams.get('query');
 
   const [activeTab, setActiveTab] = useState('hotels');
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // State to track authentication status
+
+  useEffect(() => {
+    // Check if the user has a valid authentication token
+    const token = Cookies.get('token'); // Read token from cookies
+    if (!token) {
+      // If no token is found, redirect to login page
+      navigate('/');
+      alert("You are not log in");
+    } else {
+      setIsAuthenticated(true); // If token exists, set authenticated state to true
+    }
+  }, [navigate]);
 
   if (!query) {
     return (

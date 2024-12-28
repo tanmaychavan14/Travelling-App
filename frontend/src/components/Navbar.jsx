@@ -1,8 +1,7 @@
-
+import React from 'react';
 import './Navbarstyle.css';
 // import Sign_up_in from './Sign_up_in';
-
-const Navbar = ({ setIsModalOpen, isLoggedIn, setIsLoggedIn }) => {
+const Navbar = ({ setIsModalOpen, isLoggedIn, setIsLoggedIn, handleLogout }) => {
   const scrollToContact = () => {
     document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
   };
@@ -12,8 +11,9 @@ const Navbar = ({ setIsModalOpen, isLoggedIn, setIsLoggedIn }) => {
   };
 
   const handleAuthClick = () => {
+    console.log('Logout button clicked');
     if (isLoggedIn) {
-      setIsLoggedIn(false); // Log out the user
+      handleLogout();  // Call the handleLogout function passed from the parent (Home)
     } else {
       setIsModalOpen(true); // Open the modal when 'Log In' is clicked
     }
