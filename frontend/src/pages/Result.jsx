@@ -13,7 +13,7 @@ export default function Result() {
   const query = queryParams.get('query');
 
   const [activeTab, setActiveTab] = useState('hotels');
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // State to track authentication status
+  const [, setIsAuthenticated] = useState(false); // State to track authentication status
 
   useEffect(() => {
     // Check if the user has a valid authentication token
