@@ -15,6 +15,7 @@ app.use(cookieParser());
 app.use(cors({
     origin: ['http://localhost:3000', 'https://travelifyyy.netlify.app'],
     credentials: true,
+    methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
