@@ -45,7 +45,7 @@ const Signupin = ({ onClose, setIsLoggedIn }) => {
       return;
     }
     try {
-      const response = await axios.post('https://travelling-lcvbqh8c8-tanmaychavan14s-projects.vercel.app/login', loginData, { withCredentials: true });
+      const response = await axios.post('http://localhost:5000/login', loginData, { withCredentials: true });
       if (response.status === 200) {
         alert("Login successful!");
         setIsLoggedIn(true);  // This triggers the state change to show the home page
@@ -66,7 +66,7 @@ const Signupin = ({ onClose, setIsLoggedIn }) => {
       return;
     }
     try {
-      const response = await axios.post('https://travelling-lcvbqh8c8-tanmaychavan14s-projects.vercel.app/registration', registrationData);
+      const response = await axios.post('http://localhost:5000/registration', registrationData);
       const { message } = response.data;
       if (response.status === 200) {
         alert("Registration successful!");

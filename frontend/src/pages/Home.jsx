@@ -31,7 +31,7 @@ const Home = () => {
 
   const handleLogout = () => {
     console.log('Logout button clicked');
-    fetch('https://travelling-lcvbqh8c8-tanmaychavan14s-projects.vercel.app/logout', {
+    fetch('http://localhost:5000/logout', {
       method: 'POST',
       credentials: 'include', // Ensure cookies are included in the request
     })
@@ -81,7 +81,7 @@ const Home = () => {
     // const token = document.cookie.split('; ').find(row => row.startsWith('token='));
     // console.log(token)
     try {
-      const response = await fetch(`https://travelling-lcvbqh8c8-tanmaychavan14s-projects.vercel.app/search-suggestions?query=${query}`);
+      const response = await fetch(`http://localhost:5000/search-suggestions?query=${query}`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
