@@ -54,7 +54,7 @@ app.post('/registration', async (req, res) => {
             });
         });
     } catch (e) {
-        console.error("Error during registration:", e.message);
+        console.error("Error during registration:",error.response ? error.response.data : error.message);
         res.status(500).json({ error: "Registration unsuccessful", details: e.message });
     }
 });
