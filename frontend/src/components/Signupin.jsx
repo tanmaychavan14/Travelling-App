@@ -91,6 +91,7 @@ const Signupin = ({ onClose, setIsLoggedIn }) => {
       }
     } catch (error) {
       // Handle errors during registration
+      console.log("not goint to backend")
       console.error("Error during registration:", error);
       alert("Error during registration. Please try again.");
     }
