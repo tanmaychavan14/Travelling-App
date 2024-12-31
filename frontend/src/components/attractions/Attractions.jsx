@@ -46,7 +46,7 @@ const Attractions = ({ query }) => {
           return;
         }
 
-        const response = await fetch(`https://travelling-dvog7gza0-tanmaychavan14s-projects.vercel.app/fetch-attractions?query=${query}`, {
+        const response = await fetch(`https://travelling-app-chi.vercel.app/fetch-attractions?query=${query}`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
