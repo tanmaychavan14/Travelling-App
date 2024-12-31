@@ -66,7 +66,7 @@ const Signupin = ({ onClose, setIsLoggedIn }) => {
       return;
     }
     try {
-      const response = await axios.post('https://travelling-app-chi.vercel.app/registration', registrationData,{ withCredentials: true,timeout: 5000  });
+      const response = await axios.post('https://travelling-app-chi.vercel.app/registration', registrationData,{ withCredentials: true });
       const { message } = response.data;
       if (response.status === 200) {
         alert("Registration successful!");
