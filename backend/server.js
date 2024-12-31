@@ -34,6 +34,8 @@ app.get("/", (req, res) => {
 
 // Registration Route
 app.post('/registration', async (req, res) => {
+    console.log("Registration payload:", req.body);
+
     try {
         const { name, email, password } = req.body;
         
