@@ -66,7 +66,7 @@ const Signupin = ({ onClose, setIsLoggedIn }) => {
       return;
     }
     try {
-      const response = await axios.post('https://travelling-app-chi.vercel.app/registration', registrationData);
+      const response = await axios.post('https://travelling-app-chi.vercel.app/registration', registrationData,{ withCredentials: true,timeout: 5000  });
       const { message } = response.data;
       if (response.status === 200) {
         alert("Registration successful!");
@@ -75,7 +75,7 @@ const Signupin = ({ onClose, setIsLoggedIn }) => {
         alert("Registration failed: " + message);
       }
     } catch (error) {
-      console.error("Error during registration:", error.message);
+      console.error("Error during registration:",error.response ? error.response.data : error.message);
       alert("Error during registration. Please try again.");
     }
   
