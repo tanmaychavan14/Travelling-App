@@ -75,9 +75,15 @@ const Signupin = ({ onClose, setIsLoggedIn }) => {
         alert("Registration failed: " + message);
       }
     } catch (error) {
-      console.error("Error during registration:",error.response ? error.response.data : error.message);
-      alert("Error during registration. Please try again.");
+      if (error.response) {
+        console.error("Error during registration:", error.response.data);
+        alert("Registration failed: " + error.response.data.error);
+      } else {
+        console.error("Error during registration:", error.message);
+        alert("Error during registration. Please try again.");
+      }
     }
+    
   
     // Clear registration form data after successful registration
     setRegistrationData({
