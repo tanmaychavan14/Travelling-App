@@ -13,8 +13,7 @@ require('dotenv').config();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    // origin: ['http://localhost:3000', 'https://travelifyyy.netlify.app'],
-    origin: '*',
+    origin: ['http://localhost:3000', 'https://travelifyyy.netlify.app'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
