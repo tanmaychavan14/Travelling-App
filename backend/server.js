@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const axios = require('axios'); // Use axios for HTTP requests
 const app = express();
-const port = process.env.PORT || 5000;
+// const port = process.env.PORT || 5000;
 const mongodb = require("./db/database"); // MongoDB connection file
 const User = require("./db/user"); // User model
 const cookieParser = require('cookie-parser');
@@ -13,11 +13,11 @@ require('dotenv').config();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: 'http://localhost:3000',  // Allow only your frontend to access
-    credentials: true, 
-
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allow cookies to be sent
+    origin: ['http://localhost:3000', 'https://travelifyyy.netlify.app/'],  // Add your Netlify frontend URL here
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 
 
 
@@ -286,6 +286,4 @@ function isLoggedIn(req, res, next) {
 
 
 // Start the server
-app.listen(port, () => {
-    console.log({port});
-});
+module.exports = app;
