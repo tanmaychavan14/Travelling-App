@@ -61,7 +61,7 @@ const Restaurants = ({ query }) => {
             return;
           }
 
-          const response = await fetch(`https://travelling-lcvbqh8c8-tanmaychavan14s-projects.vercel.app/fetch-restaurants?query=${query}`, {
+          const response = await fetch(`https://travelling-dvog7gza0-tanmaychavan14s-projects.vercel.app/fetch-restaurants?query=${query}`, {
             method: 'GET',
             headers: {
               Authorization: `Bearer ${token}`,
