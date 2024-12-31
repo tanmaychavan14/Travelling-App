@@ -61,37 +61,48 @@ const Signupin = ({ onClose, setIsLoggedIn }) => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+  
+    // Validate form fields
     if (!registrationData.name || !registrationData.email || !registrationData.password) {
       alert("Please fill in all the fields.");
       return;
     }
+  
     try {
-      const response = await axios.post('https://travelling-app-chi.vercel.app/registration', registrationData,{ withCredentials: true });
-      const { message } = response.data;
-      if (response.status === 200) {
+      // Make the POST request using fetch
+      const response = await fetch('https://travelling-app-chi.vercel.app/registration', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(registrationData), // Send the registration data as a JSON string
+        credentials: 'include', // Include cookies with the request (same as withCredentials: true in axios)
+      });
+  
+      // Parse the JSON response
+      const data = await response.json();
+  
+      // Check if the response status is 200 (success)
+      if (response.ok) {
         alert("Registration successful!");
-        setSignUpActive(false);
+        setSignUpActive(false); // Deactivate the sign-up form or navigate to another page
       } else {
-        alert("Registration failed: " + message);
+        alert(`Registration failed: ${data.message || "Unknown error"}`);
       }
     } catch (error) {
-      if (error.response) {
-        console.error("Error during registration:", error.response.data);
-        alert("Registration failed: " + error.response.data.error);
-      } else {
-        console.error("Error during registration:", error.message);
-        alert("Error during registration. Please try again.");
-      }
+      // Handle errors during registration
+      console.error("Error during registration:", error);
+      alert("Error during registration. Please try again.");
     }
-    
   
-    // Clear registration form data after successful registration
+    // Clear registration form data after attempting registration
     setRegistrationData({
       name: "",
       email: "",
       password: ""
     });
   };
+  
 
   return (
     <div className={`container ${isSignUpActive ? 'active' : ''}`} id="container">
