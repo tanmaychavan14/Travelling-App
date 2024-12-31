@@ -6,7 +6,7 @@ const app = express();
 const mongodb = require("./db/database"); // MongoDB connection file
 const User = require("./db/user"); // User model
 const cookieParser = require('cookie-parser');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
