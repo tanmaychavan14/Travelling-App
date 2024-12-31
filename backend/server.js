@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-
+mongodb();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
@@ -25,7 +25,7 @@ app.use(cors({
 
 
 // Connect to MongoDB
-mongodb();
+
 
 // Root Endpoint
 app.get("/", (req, res) => {
