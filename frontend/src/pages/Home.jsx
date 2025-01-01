@@ -13,11 +13,7 @@ const Home = () => {
 
   const dropdownRef = useRef(null);
 
-  useEffect(() => {
-    // Mock check for login state without token
-    setIsLoggedIn(false);
-  }, []);
-
+ 
   const openModal = () => {
     setIsModalOpen(true);
   };
