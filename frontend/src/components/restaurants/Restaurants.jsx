@@ -8,7 +8,7 @@ import 'leaflet/dist/leaflet.css';
 const Restaurants = ({ query }) => {
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error] = useState(null);
   const [minRating, setMinRating] = useState(0);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); 
