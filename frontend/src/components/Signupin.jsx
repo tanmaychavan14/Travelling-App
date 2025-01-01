@@ -76,7 +76,7 @@ const Signupin = ({ onClose, setIsLoggedIn }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(registrationData), // Send the registration data as a JSON string
-        credentials: 'include', // Include cookies with the request (same as withCredentials: true in axios)
+        credentials: 'true', // Include cookies with the request (same as withCredentials: true in axios)
       });
   
       // Parse the JSON response
