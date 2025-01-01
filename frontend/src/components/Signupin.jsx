@@ -57,8 +57,7 @@ const Signupin = ({ onClose, setIsLoggedIn }) => {
         );
         
         if (response.status === 200) {
-            const token = response.data.token;
-            localStorage.setItem('token', token);
+         
             setIsLoggedIn(true);
             onClose();
         }
@@ -83,8 +82,7 @@ const handleSignUp = async (e) => {
         );
         
         if (response.status === 200) {
-            const token = response.data.token;
-            localStorage.setItem('token', token);
+           
             alert("Registration successful!");
             setSignUpActive(false);
         }

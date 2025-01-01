@@ -7,13 +7,11 @@ const mongodb = require("./db/database"); // MongoDB connection file
 const User = require("./db/user"); // User model
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 app.use(express.json());
 app.use(cookieParser());
-// In your Express server
-// At the top of your server file
+
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
     credentials: true,
@@ -23,7 +21,6 @@ app.use(cors({
 
 // Add preflight handler
 app.options('*', cors());
-
 
 // Connect to MongoDB
 mongodb();
@@ -44,18 +41,10 @@ app.post('/registration', async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
         
-        const user = await User.create({
+        await User.create({
             name,
             email,
             password: hash
-        });
-        
-        const token = jwt.sign({ email }, process.env.JWT_SECRET);
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            maxAge: 24 * 60 * 60 * 1000 // 24 hours
         });
         
         res.status(200).json({ message: "Registration successful" });
@@ -63,10 +52,6 @@ app.post('/registration', async (req, res) => {
         res.status(500).json({ error: e.message });
     }
 });
-
-
-
-
 
 // Login Route
 app.post("/login", async (req, res) => {
@@ -81,13 +66,6 @@ app.post("/login", async (req, res) => {
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (isMatch) {
-            const token = jwt.sign({ email }, process.env.JWT_SECRET);
-            res.cookie("token", token, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'none',
-                maxAge: 3600000
-            });
             res.status(200).json({ message: "Login successful" });
         } else {
             res.status(401).json({ message: "Incorrect email or password" });
@@ -97,24 +75,21 @@ app.post("/login", async (req, res) => {
     }
 });
 
-
-
 // Function for geocoding using OpenStreetMap Nominatim API
 async function geocode(address) {
     const response = await axios.get(`https://nominatim.openstreetmap.org/search?q=${address}&format=json`, {
         headers: {
-            'User-Agent': 'tanmaychavan2214/1.0 (tanmaychavan2214@gmail.com)' // Customize with your app details
+            'User-Agent': 'tanmaychavan2214/1.0 (tanmaychavan2214@gmail.com)'
         }
     });
     return response.data;
 }
 
 // Endpoint to handle search suggestions based on query
-app.get('/search-suggestions',async (req, res) => {
+app.get('/search-suggestions', async (req, res) => {
     const query = req.query.query ? req.query.query.toLowerCase() : '';
     
     try {
-    
         // Geocoding the query using Nominatim API
         const data = await geocode(query);
 
@@ -133,20 +108,8 @@ app.get('/search-suggestions',async (req, res) => {
     }
 });
 
-
-
-  
-
-// Fetch Hotels (Attractions) Route
-// Fetch Hotels (Attractions) Route
-async function geocode(address) {
-    const response = await axios.get(`https://nominatim.openstreetmap.org/search?q=${address}&format=json`);
-    return response.data;
-}
-
 // Hotels fetching endpoint
-app.get("/fetch-hotels",isLoggedIn, async (req, res) => {
-    
+app.get("/fetch-hotels", async (req, res) => {
     try {
         const query = req.query.query || '';  
         const locationData = await geocode(query);  // Get geocode data based on the query
@@ -161,31 +124,28 @@ app.get("/fetch-hotels",isLoggedIn, async (req, res) => {
         // Use the latitude and longitude for the API request
         const url = 'https://travel-advisor.p.rapidapi.com/hotels/list-by-latlng';
         const params = {
-          
             latitude: latitude,
             longitude: longitude,
             lunit: 'km',
             currency: 'USD',
             lang: 'en_US',
-            search: query  // Assuming the external API accepts a 'search' parameter for filtering
+            search: query
         };
 
         const headers = {
-            'x-rapidapi-key': process.env.RAPIDAPI_KEY, // Replace with your actual API key
+            'x-rapidapi-key': process.env.RAPIDAPI_KEY,
             'x-rapidapi-host': process.env.RAPIDAPI_HOST
         };
         
         const response = await axios.get(url, { params, headers });
-        console.log("Hotel API Response:", response.data); 
-        res.status(200).json(response.data);  // Send the correct data to the frontend
+        res.status(200).json(response.data);
     } catch (err) {
         console.error("Error fetching hotels:", err);
         res.status(500).json({ message: "Error fetching hotels", details: err.message });
     }
 });
 
-
-app.get("/fetch-restaurants", isLoggedIn,async (req, res) => {
+app.get("/fetch-restaurants", async (req, res) => {
     try {
         const query = req.query.query || '';  
         const locationData = await geocode(query);  // Get geocode data based on the query
@@ -226,14 +186,13 @@ app.get("/fetch-restaurants", isLoggedIn,async (req, res) => {
     }
 });
 
-app.get("/fetch-attractions",isLoggedIn, async (req, res) => {
+app.get("/fetch-attractions", async (req, res) => {
     try {
         const query = req.query.query || '';  
         const locationData = await geocode(query);  // Get geocode data based on the query
         if (locationData.length === 0) {
             return res.status(400).json({ message: "No location found" });
         }
-
 
         // Get latitude and longitude from geocode data
         const latitude = locationData[0].lat;
@@ -266,31 +225,6 @@ app.get("/fetch-attractions",isLoggedIn, async (req, res) => {
     }
 });
 
-// Logout Route
-app.post("/logout", (req, res) => {
-    res.clearCookie("token");
-    console.log("logout")
-    res.status(200).json({ message: "Logged out successfully" });
-});
-
-
-
-// Middleware to check if the user is logged in
-function isLoggedIn(req, res, next) {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) return res.status(401).json({ message: "Unauthorized" });
-    
-    try {
-        const data = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = data;
-        next();
-    } catch (err) {
-        res.status(401).json({ message: "Invalid token" });
-    }
-}
-
 
 // Start the server
-app.listen(port, () => {
-    console.log({port});
-});
+module.exports = app;

@@ -54,12 +54,7 @@ const Restaurants = ({ query }) => {
           setLoading(false);
         } else {
           // If no data in IDB, fetch from the API
-          const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
-          if (!token) {
-            setError("Unauthorized : Token Not found")
-            setLoading(false);
-            return;
-          }
+         
 
           const response = await fetch(`https://travelling-app-chi.vercel.app/fetch-restaurants?query=${query}`, {
             method: 'GET',

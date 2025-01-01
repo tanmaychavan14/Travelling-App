@@ -39,12 +39,7 @@ const Attractions = ({ query }) => {
         }
 
         // Fetch data from API
-        const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
-        if (!token) {
-          console.error('Token not found');
-          setLoading(false);
-          return;
-        }
+        
 
         const response = await fetch(`https://travelling-app-chi.vercel.app/fetch-attractions?query=${query}`, {
           method: 'GET',
