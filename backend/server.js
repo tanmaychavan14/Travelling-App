@@ -13,13 +13,17 @@ require('dotenv').config();
 app.use(express.json());
 app.use(cookieParser());
 // In your Express server
+// At the top of your server file
 app.use(cors({
-    origin: ['https://travelifyyy.netlify.app', 'http://localhost:3000'], // Add localhost for development
+    origin: 'https://travelifyyy.netlify.app',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+    exposedHeaders: ['Access-Control-Allow-Origin']
 }));
 
+// Add preflight handler
+app.options('*', cors());
 
 
 // Connect to MongoDB

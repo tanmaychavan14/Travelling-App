@@ -61,22 +61,17 @@ const Signupin = ({ onClose, setIsLoggedIn }) => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    
-    if (!registrationData.name || !registrationData.email || !registrationData.password) {
-        alert("Please fill in all fields.");
-        return;
-    }
-    
     try {
-        const response = await axios.post('https://travelling-app-chi.vercel.app/registration', 
-            registrationData,
-            {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json',
-                }
+        const response = await axios({
+            method: 'post',
+            url: 'https://travelling-app-chi.vercel.app/registration',
+            data: registrationData,
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json',
+                'Origin': 'https://travelifyyy.netlify.app'
             }
-        );
+        });
         
         if (response.status === 200) {
             alert("Registration successful!");
@@ -84,7 +79,7 @@ const Signupin = ({ onClose, setIsLoggedIn }) => {
         }
     } catch (error) {
         console.error("Registration error:", error);
-        alert(error.response?.data?.message || "Registration failed");
+        alert("Registration failed. Please try again.");
     }
 };
 
