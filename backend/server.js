@@ -13,7 +13,7 @@ require('dotenv').config();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: 'https://travelifyyy.netlify.app/',  // Allow only your frontend to access
+    origin: 'https://travelifyyy.netlify.app',  // Allow only your frontend to access
     credentials: true, 
 
     allowedHeaders: ['Content-Type', 'Authorization'], // Allow cookies to be sent
