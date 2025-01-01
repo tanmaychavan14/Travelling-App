@@ -15,11 +15,10 @@ app.use(cookieParser());
 // In your Express server
 // At the top of your server file
 app.use(cors({
-    origin: 'https://travelifyyy.netlify.app',
+    origin: process.env.CORS_ORIGIN,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
-    exposedHeaders: ['Access-Control-Allow-Origin']
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // Add preflight handler
@@ -34,62 +33,69 @@ app.get("/", (req, res) => {
     res.json("Server is listening");
 });
 
-// Registration Route
 app.post('/registration', async (req, res) => {
     try {
         const { name, email, password } = req.body;
-        
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ error: "Email already exists!" });
+            return res.status(400).json({ error: "Email exists" });
         }
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(password, salt, async (err, hash) => {
-                let user = await User.create({
-                    name: name,
-                    email: email,
-                    password: hash,
-                });
-                await user.save();
-                let token = jwt.sign({ email: email }, "encryption");
-                res.cookie("token", token);
-                res.status(200).json({ message: "Registration successful" });
-            });
+        
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt);
+        
+        const user = await User.create({
+            name,
+            email,
+            password: hash
         });
+        
+        const token = jwt.sign({ email }, process.env.JWT_SECRET);
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        });
+        
+        res.status(200).json({ message: "Registration successful" });
     } catch (e) {
-        console.error("Error during registration:", e.message);
-        res.status(500).json({ error: "Registration unsuccessful", details: e.message });
+        res.status(500).json({ error: e.message });
     }
 });
+
+
+
+
 
 // Login Route
 app.post("/login", async (req, res) => {
-   
     const { email, password } = req.body;
-
     if (!email || !password) {
-        return res.status(400).json({ message: "Please provide both name and password" });
+        return res.status(400).json({ message: "Please provide both email and password" });
     }
 
-    const user = await User.findOne({ email });
-    if (!user) {
-        return res.status(401).json({ message: "Incorrect username or password" });
-    } else {
-        bcrypt.compare(password, user.password, (err, result) => {
-            if (result) {
-                let token = jwt.sign({ email: email }, "encryption");
-                res.cookie("token", token, {
-                    
-                    maxAge: 3600000,
-                  });
-                res.status(200).json({ message: "Login successful" });
-            } else {
-                res.status(500).json({ message: "Something went wrong" });
-            }
-        });
+    try {
+        const user = await User.findOne({ email });
+        if (!user) return res.status(401).json({ message: "Incorrect email or password" });
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (isMatch) {
+            const token = jwt.sign({ email }, process.env.JWT_SECRET);
+            res.cookie("token", token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'none',
+                maxAge: 3600000
+            });
+            res.status(200).json({ message: "Login successful" });
+        } else {
+            res.status(401).json({ message: "Incorrect email or password" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
     }
 });
-
 
 
 
@@ -271,20 +277,15 @@ app.post("/logout", (req, res) => {
 
 // Middleware to check if the user is logged in
 function isLoggedIn(req, res, next) {
-   
-    const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
-   
-    // Get token from 'Bearer <token>'
-    if (!token) {
-        return res.status(401).json({ message: "Unauthorized" });
-    }
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ message: "Unauthorized" });
+    
     try {
-        const data = jwt.verify(token, "encryption");
+        const data = jwt.verify(token, process.env.JWT_SECRET);
         req.user = data;
         next();
-        
     } catch (err) {
-        return res.status(401).json({ message: "Invalid token" });
+        res.status(401).json({ message: "Invalid token" });
     }
 }
 

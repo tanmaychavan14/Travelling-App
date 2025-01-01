@@ -41,48 +41,58 @@ const Signupin = ({ onClose, setIsLoggedIn }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!loginData.email || !loginData.password) {
-      alert("Please fill in both fields.");
-      return;
+        alert("Please fill in both fields.");
+        return;
     }
     try {
-      const response = await axios.post('https://travelling-app-chi.vercel.app/login', loginData, { withCredentials: true });
-      if (response.status === 200) {
-        alert("Login successful!");
-        setIsLoggedIn(true);  // This triggers the state change to show the home page
-        onClose();  // Close the login/sign-up modal if needed
-      } else {
-        alert("Login failed. Please check your credentials.");
-      }
-    } catch (error) {
-      console.log("Error during login:", error.message);
-      alert("Login failed. Please try again.");
-    }
-  };
-
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    try {
-        const response = await axios({
-            method: 'post',
-            url: 'https://travelling-app-chi.vercel.app/registration',
-            data: registrationData,
-            withCredentials: true,
-            headers: {
-                'Content-Type': 'application/json',
-                'Origin': 'https://travelifyyy.netlify.app'
+        const response = await axios.post(
+            'https://travelling-app-chi.vercel.app/login',
+            loginData,
+            {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             }
-        });
+        );
         
         if (response.status === 200) {
+            const token = response.data.token;
+            localStorage.setItem('token', token);
+            setIsLoggedIn(true);
+            onClose();
+        }
+    } catch (error) {
+        console.error("Login error:", error);
+        alert(error.response?.data?.message || "Login failed");
+    }
+};
+
+const handleSignUp = async (e) => {
+    e.preventDefault();
+    try {
+        const response = await axios.post(
+            'https://travelling-app-chi.vercel.app/registration',
+            registrationData,
+            {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+        
+        if (response.status === 200) {
+            const token = response.data.token;
+            localStorage.setItem('token', token);
             alert("Registration successful!");
             setSignUpActive(false);
         }
     } catch (error) {
         console.error("Registration error:", error);
-        alert("Registration failed. Please try again.");
+        alert(error.response?.data?.message || "Registration failed");
     }
 };
-
   return (
     <div className={`container ${isSignUpActive ? 'active' : ''}`} id="container">
       {/* Sign-Up Form */}
