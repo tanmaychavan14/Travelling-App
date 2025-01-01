@@ -16,8 +16,15 @@ app.use(cors({
     origin: 'https://travelifyyy.netlify.app', // Allow only your frontend domain
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true, // Allow cookies to be sent
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
+// app.use(cors({
+//     origin: 'http://localhost:3000',  // Allow only your frontend to access
+//     credentials: true, 
+
+//      // Allow cookies to be sent
+// }));
 
 
 
