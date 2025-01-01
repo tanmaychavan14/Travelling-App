@@ -2,34 +2,28 @@ const express = require('express');
 const cors = require('cors');
 const axios = require('axios'); // Use axios for HTTP requests
 const app = express();
-// const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5000;
 const mongodb = require("./db/database"); // MongoDB connection file
 const User = require("./db/user"); // User model
 const cookieParser = require('cookie-parser');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-mongodb();
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: 'https://travelifyyy.netlify.app', // Allow only your frontend domain
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true, // Allow cookies to be sent
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: 'https://travelifyyy.netlify.app/',  // Allow only your frontend to access
+    credentials: true, 
+
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allow cookies to be sent
 }));
 
-// app.use(cors({
-//     origin: 'http://localhost:3000',  // Allow only your frontend to access
-//     credentials: true, 
-
-//      // Allow cookies to be sent
-// }));
 
 
 
 // Connect to MongoDB
-
+mongodb();
 
 // Root Endpoint
 app.get("/", (req, res) => {
@@ -38,8 +32,6 @@ app.get("/", (req, res) => {
 
 // Registration Route
 app.post('/registration', async (req, res) => {
-    console.log("Registration payload:", req.body);
-
     try {
         const { name, email, password } = req.body;
         
@@ -61,7 +53,7 @@ app.post('/registration', async (req, res) => {
             });
         });
     } catch (e) {
-        console.error("Error during registration:",e.response ? e.response.data : e.message);
+        console.error("Error during registration:", e.message);
         res.status(500).json({ error: "Registration unsuccessful", details: e.message });
     }
 });
@@ -294,4 +286,6 @@ function isLoggedIn(req, res, next) {
 
 
 // Start the server
-module.exports = app;
+app.listen(port, () => {
+    console.log({port});
+});
