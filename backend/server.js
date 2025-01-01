@@ -12,12 +12,14 @@ require('dotenv').config();
 mongodb();
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-    origin: ['http://localhost:3000', 'https://travelifyyy.netlify.app'],
-    credentials: true,
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+const corsOptions = {
+    origin: 'https://travelifyyy.netlify.app', // Replace with your frontend domain
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  };
+  
+  app.use(cors(corsOptions));
+  
 
 
 
