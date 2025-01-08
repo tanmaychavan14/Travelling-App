@@ -47,7 +47,7 @@ const Signupin = ({ onClose, setIsLoggedIn }) => {
     }
     try {
         const response = await axios.post(
-            `${BACKEND_URL}/login`,
+            `${BACKEND_URL}login`,
             loginData,
             {
                 withCredentials: true,
@@ -72,7 +72,7 @@ const handleSignUp = async (e) => {
     e.preventDefault();
     try {
         const response = await axios.post(
-            `${BACKEND_URL}/registration`,
+            `${BACKEND_URL}registration`,
             registrationData,
             {
                 withCredentials: true,

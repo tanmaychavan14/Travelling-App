@@ -42,7 +42,7 @@ const Attractions = ({ query }) => {
         // Fetch data from API
         
 
-        const response = await fetch(`${BACKEND_URL}/fetch-attractions?query=${query}`, {
+        const response = await fetch(`${BACKEND_URL}fetch-attractions?query=${query}`, {
           method: 'GET',
          
           credentials: 'include',

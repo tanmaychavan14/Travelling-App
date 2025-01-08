@@ -56,7 +56,7 @@ const Restaurants = ({ query }) => {
           // If no data in IDB, fetch from the API
          
 
-          const response = await fetch(`${BACKEND_URL}/fetch-restaurants?query=${query}`, {
+          const response = await fetch(`${BACKEND_URL}fetch-restaurants?query=${query}`, {
             method: 'GET',
            
             credentials: 'include',

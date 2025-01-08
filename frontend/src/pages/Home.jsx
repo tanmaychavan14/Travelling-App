@@ -24,7 +24,7 @@ const Home = () => {
 
   const handleLogout = () => {
     console.log('Logout button clicked');
-    fetch(`${BACKEND_URL}/logout`, {
+    fetch(`${BACKEND_URL}logout`, {
       method: 'POST',
       credentials: 'include',
     })
@@ -56,7 +56,7 @@ const Home = () => {
       openModal();
       return;
     }
-    navigate(`/results?query=${searchQuery}`);
+    navigate(`results?query=${searchQuery}`);
   };
 
   const handleInputChange = async (e) => {
@@ -70,7 +70,7 @@ const Home = () => {
     }
 
     try {
-      const response = await fetch(`${BACKEND_URL}/search-suggestions?query=${query}`);
+      const response = await fetch(`${BACKEND_URL}search-suggestions?query=${query}`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
