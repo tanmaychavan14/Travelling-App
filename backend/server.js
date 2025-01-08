@@ -227,4 +227,5 @@ app.get("/fetch-attractions", async (req, res) => {
 
 
 // Start the server
-module.exports = app;
+// module.exports = app;
+app.listen(port)

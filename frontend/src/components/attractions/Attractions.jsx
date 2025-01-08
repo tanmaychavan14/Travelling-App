@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../hotels/hotel.css';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const Attractions = ({ query }) => {
    const [error] = useState(null);
   const [locations, setLocations] = useState([]);
@@ -41,7 +42,7 @@ const Attractions = ({ query }) => {
         // Fetch data from API
         
 
-        const response = await fetch(`https://travelling-app-chi.vercel.app/fetch-attractions?query=${query}`, {
+        const response = await fetch(`${BACKEND_URL}/fetch-attractions?query=${query}`, {
           method: 'GET',
          
           credentials: 'include',

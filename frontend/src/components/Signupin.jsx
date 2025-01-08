@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Sign_up_in.css';
 import axios from 'axios';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Signupin = ({ onClose, setIsLoggedIn }) => {
   const [isSignUpActive, setSignUpActive] = useState(true);
@@ -46,7 +47,7 @@ const Signupin = ({ onClose, setIsLoggedIn }) => {
     }
     try {
         const response = await axios.post(
-            'https://travelling-app-chi.vercel.app/login',
+            `${BACKEND_URL}/login`,
             loginData,
             {
                 withCredentials: true,
@@ -71,7 +72,7 @@ const handleSignUp = async (e) => {
     e.preventDefault();
     try {
         const response = await axios.post(
-            'https://travelling-app-chi.vercel.app/registration',
+            `${BACKEND_URL}/registration`,
             registrationData,
             {
                 withCredentials: true,
