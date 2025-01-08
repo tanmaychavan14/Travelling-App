@@ -60,7 +60,7 @@ export default function Hotels({ query }) {
         }
 
         
-        const response = await fetch(`${BACKEND_URL}/fetch-hotels?query=${query}`, {
+        const response = await fetch(`${BACKEND_URL}fetch-hotels?query=${query}`, {
           method: "GET",
           
           credentials: "include",

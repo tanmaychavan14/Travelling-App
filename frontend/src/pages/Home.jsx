@@ -70,7 +70,7 @@ const Home = () => {
     }
 
     try {
-      const response = await fetch(`${BACKEND_URL}/search-suggestions?query=${query}`);
+      const response = await fetch(`${BACKEND_URL}search-suggestions?query=${query}`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
