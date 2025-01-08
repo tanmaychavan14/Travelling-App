@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { openDB } from 'idb';
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-
-
 
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../hotels/hotel.css';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const Attractions = ({ query }) => {
    const [error] = useState(null);
   const [locations, setLocations] = useState([]);

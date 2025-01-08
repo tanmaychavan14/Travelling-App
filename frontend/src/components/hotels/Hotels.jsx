@@ -3,8 +3,9 @@ import { openDB } from "idb";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
 import '../hotels/hotel.css';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default function Hotels({ query }) {
   const [locations, setLocations] = useState([]);
