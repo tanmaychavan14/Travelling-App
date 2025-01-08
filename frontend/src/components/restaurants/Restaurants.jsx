@@ -4,7 +4,7 @@ import "../restaurants/restaurant.css";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const Restaurants = ({ query }) => {
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -56,7 +56,7 @@ const Restaurants = ({ query }) => {
           // If no data in IDB, fetch from the API
          
 
-          const response = await fetch(`https://travelling-app-chi.vercel.app/fetch-restaurants?query=${query}`, {
+          const response = await fetch(`${BACKEND_URL}/fetch-restaurants?query=${query}`, {
             method: 'GET',
            
             credentials: 'include',

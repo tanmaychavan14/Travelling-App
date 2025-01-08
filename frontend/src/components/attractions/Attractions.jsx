@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { openDB } from 'idb';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+
 
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon } from 'leaflet';
@@ -41,7 +44,7 @@ const Attractions = ({ query }) => {
         // Fetch data from API
         
 
-        const response = await fetch(`https://travelling-app-chi.vercel.app/fetch-attractions?query=${query}`, {
+        const response = await fetch(`${BACKEND_URL}/fetch-attractions?query=${query}`, {
           method: 'GET',
          
           credentials: 'include',

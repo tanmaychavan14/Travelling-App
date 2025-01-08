@@ -3,6 +3,7 @@ import { openDB } from "idb";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 import '../hotels/hotel.css';
 
 export default function Hotels({ query }) {
@@ -58,7 +59,7 @@ export default function Hotels({ query }) {
         }
 
         
-        const response = await fetch(`https://travelling-app-chi.vercel.app/fetch-hotels?query=${query}`, {
+        const response = await fetch(`${BACKEND_URL}/fetch-hotels?query=${query}`, {
           method: "GET",
           
           credentials: "include",

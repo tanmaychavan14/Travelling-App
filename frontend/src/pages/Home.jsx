@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import Signupin from '../components/Signupin';
 import Navbar from '../components/Navbar';
-
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,7 +24,7 @@ const Home = () => {
 
   const handleLogout = () => {
     console.log('Logout button clicked');
-    fetch('https://travelling-app-chi.vercel.app/logout', {
+    fetch(`${BACKEND_URL}/logout`, {
       method: 'POST',
       credentials: 'include',
     })
@@ -70,7 +70,7 @@ const Home = () => {
     }
 
     try {
-      const response = await fetch(`https://travelling-app-chi.vercel.app/search-suggestions?query=${query}`);
+      const response = await fetch(`${BACKEND_URL}/search-suggestions?query=${query}`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
